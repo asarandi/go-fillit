@@ -109,14 +109,6 @@ func makeBoard(size int) board {
 	return b
 }
 
-func (b board) reset() {
-	for i := range b {
-		for j := range b[i] {
-			b[i][j] = dot
-		}
-	}
-}
-
 func (b board) print() {
 	for i := range b {
 		fmt.Println(string(b[i]))
@@ -124,37 +116,56 @@ func (b board) print() {
 }
 
 func (b board) check(i, j int, t tetrimino) bool {
+	for y := range t {
+		for x := range t[y] {
+			if t[y][x] != hashTag { continue }
+			if i+y >= len(b) || j+x >= len(b[i+y]) { return false }
+			if b[i+y][j+x] != dot {	return false }
+		}
+	}
 	return true
 }
 
-func (b board) put(i, j int, t tetrimino) bool {
-	return true
+func (b board) put(i, j, idx int, t tetrimino) {
+	for y := range t {
+		for x := range t[y] {
+			if t[y][x] != hashTag { continue }
+			b[i+y][j+x] = byte(idx+'A')
+		}
+	}
 }
 
-func (b board) remove(i, j int, t tetrimino) bool {
-	return true
+func (b board) remove(i, j int, t tetrimino) {
+	for y := range t {
+		for x := range t[y] {
+			if t[y][x] != hashTag { continue }
+			b[i+y][j+x] = dot
+		}
+	}
 }
 
 func recursion(b board, array []tetrimino, idx int) bool {
 	if idx == len(array) { return true }
 	for i := range b {
 		for j := range b[i] {
-			if (b.check(i,j,array[idx])) { b.put(i,j,array[idx]) }
-			if recursion(b, array, idx + 1) { return true }
-			b.remove(i,j,array[idx])
+			if (b.check(i,j,array[idx])) {
+				b.put(i, j, idx, array[idx]);
+				if recursion(b, array, idx+1) { return true }
+				b.remove(i, j, array[idx])
+			}
 		}
 	}
 	return false
 }
 
-func solve(array []tetrimino) {
-	square := len(array)
+func solve(array []tetrimino) board {
+	square := 2
+	for square*square < len(array) * 4 { square += 1}
 	for {
 		b := makeBoard(square)
 		square += 1
 		if !recursion(b, array, 0) { continue }
-		b.print();
-		break
+		return b
 	}
 }
 
@@ -164,5 +175,6 @@ func main() {
 	if err != nil {	fmt.Println("failed to read file"); return }
 	ok, tetriminos := validateFile(data);
 	if !ok { fmt.Println("error"); return }
-	solve(tetriminos)
+	board := solve(tetriminos)
+	board.print()
 }
