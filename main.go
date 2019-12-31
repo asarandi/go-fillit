@@ -21,6 +21,6 @@ func main() {
 		fmt.Println("error")
 		return
 	}
-	board := solve(tetriminos)
-	board.print()
+	solution := solve(tetriminos)
+	solution.print()
 }

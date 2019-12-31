@@ -24,7 +24,7 @@ func isValidBlock(data []byte) bool {
 	return numDots == 12 && numHashtags == 4
 }
 
-func validateFile(data []byte) (ok bool, result []tetrimino) {
+func validateFile(data []byte) (ok bool, res []tetrimino) {
 	for i := 0; i < len(data); {
 		if i+blockSize > len(data) {
 			break
@@ -36,7 +36,7 @@ func validateFile(data []byte) (ok bool, result []tetrimino) {
 		if !t.isValid() {
 			break
 		}
-		result = append(result, t)
+		res = append(res, t)
 		i += blockSize
 		if i == len(data) {
 			ok = true
@@ -47,5 +47,5 @@ func validateFile(data []byte) (ok bool, result []tetrimino) {
 		}
 		i += 1
 	}
-	return ok, result
+	return ok, res
 }

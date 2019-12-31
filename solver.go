@@ -6,30 +6,28 @@ func recursion(b board, array []tetrimino, idx int) bool {
 	}
 	for i := range b {
 		for j := range b[i] {
-			if !b.check(i, j, array[idx]) {
-				continue
+			if b.check(i, j, array[idx]) {
+				b.put(i, j, idx, array[idx])
+				if recursion(b, array, idx+1) {
+					return true
+				}
+				b.remove(i, j, array[idx])
 			}
-			b.put(i, j, idx, array[idx])
-			if recursion(b, array, idx+1) {
-				return true
-			}
-			b.remove(i, j, array[idx])
 		}
 	}
 	return false
 }
 
 func solve(array []tetrimino) board {
+	var res board
 	square := 2
 	for square*square < len(array)*4 {
 		square += 1
 	}
-	for {
-		b := makeBoard(square)
+	for done := false; !done; {
+		res = makeBoard(square)
+		done = recursion(res, array, 0)
 		square += 1
-		if !recursion(b, array, 0) {
-			continue
-		}
-		return b
 	}
+	return res
 }

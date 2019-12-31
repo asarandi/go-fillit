@@ -5,15 +5,14 @@ import "fmt"
 type board [][]byte
 
 func makeBoard(size int) board {
-	var b board
-	for i := 0; i < size; i++ {
-		row := make([]byte, size)
-		for j := range row {
-			row[j] = dot
+	res := make([][]byte, size)
+	for i := range res {
+		res[i] = make([]byte, size)
+		for j := range res[i] {
+			res[i][j] = dot
 		}
-		b = append(b, row)
 	}
-	return b
+	return res
 }
 
 func (b board) print() {
@@ -25,14 +24,13 @@ func (b board) print() {
 func (b board) check(i, j int, t tetrimino) bool {
 	for y := range t {
 		for x := range t[y] {
-			if t[y][x] != hashTag {
-				continue
-			}
-			if i+y >= len(b) || j+x >= len(b[i+y]) {
-				return false
-			}
-			if b[i+y][j+x] != dot {
-				return false
+			if t[y][x] == hashTag {
+				if i+y >= len(b) || j+x >= len(b) {
+					return false
+				}
+				if b[i+y][j+x] != dot {
+					return false
+				}
 			}
 		}
 	}
@@ -42,10 +40,9 @@ func (b board) check(i, j int, t tetrimino) bool {
 func (b board) put(i, j, idx int, t tetrimino) {
 	for y := range t {
 		for x := range t[y] {
-			if t[y][x] != hashTag {
-				continue
+			if t[y][x] == hashTag {
+				b[i+y][j+x] = byte(idx + 'A')
 			}
-			b[i+y][j+x] = byte(idx + 'A')
 		}
 	}
 }
@@ -53,10 +50,9 @@ func (b board) put(i, j, idx int, t tetrimino) {
 func (b board) remove(i, j int, t tetrimino) {
 	for y := range t {
 		for x := range t[y] {
-			if t[y][x] != hashTag {
-				continue
+			if t[y][x] == hashTag {
+				b[i+y][j+x] = dot
 			}
-			b[i+y][j+x] = dot
 		}
 	}
 }

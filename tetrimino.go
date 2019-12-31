@@ -3,42 +3,54 @@ package main
 type tetrimino [4][]byte
 
 var validUint16Map = map[uint16]bool{
-	0x8888: true, 0xf000: true, // I
-	0xcc00: true,                                           // O
-	0xe400: true, 0x4c40: true, 0x4e00: true, 0x8c80: true, // T
-	0x88c0: true, 0xe800: true, 0xc440: true, 0x2e00: true, // L
-	0x44c0: true, 0x8e00: true, 0xc880: true, 0xe200: true, // J
-	0x6c00: true, 0x8c40: true, // S
-	0xc600: true, 0x4c80: true, // Z
+	0x8888: true,
+	0xf000: true,
+	0xcc00: true,
+	0xe400: true,
+	0x4c40: true,
+	0x4e00: true,
+	0x8c80: true,
+	0x88c0: true,
+	0xe800: true,
+	0xc440: true,
+	0x2e00: true,
+	0x44c0: true,
+	0x8e00: true,
+	0xc880: true,
+	0xe200: true,
+	0x6c00: true,
+	0x8c40: true,
+	0xc600: true,
+	0x4c80: true,
 }
 
 func (t tetrimino) isEmptyRow(row int) bool {
-	result := true
+	res := true
 	for i := 0; i < 4; i++ {
-		result = result && t[row][i] == dot
+		res = res && t[row][i] == dot
 	}
-	return result
+	return res
 }
 
 func (t tetrimino) isEmptyColumn(column int) bool {
-	result := true
+	res := true
 	for i := 0; i < 4; i++ {
-		result = result && t[i][column] == dot
+		res = res && t[i][column] == dot
 	}
-	return result
+	return res
 }
 
 func (t tetrimino) toUint16() uint16 {
-	var result uint16 = 0
+	var res uint16 = 0
 	for i := 0; i < 4; i++ {
 		for j := 0; j < 4; j++ {
-			result <<= 1
+			res <<= 1
 			if t[i][j] == hashTag {
-				result |= 1
+				res |= 1
 			}
 		}
 	}
-	return result
+	return res
 }
 
 func (t tetrimino) isValid() bool {
